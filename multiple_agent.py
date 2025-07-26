@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 from agno.tools import tool
 from agno.agent import Agent
@@ -12,22 +13,24 @@ load_dotenv()
 
 os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
 
+current_time = datetime.now().strftime("%A, %B %d, %Y %I:%M %p")
+
 @tool
-def add(a:int,b:int) -> int:
+def add(a:float,b:float) -> float:
     """Addition of numbers."""
     return a+b
     
 @tool
-def subtract(a:int,b:int) -> int:
+def subtract(a:float,b:float) -> float:
     """Subtraction of numbers."""
     return a-b
 
 @tool
-def product(a:int,b:int) -> int:
+def product(a:float,b:float) -> float:
     """Multiplication of numbers."""
     return a*b
 @tool
-def division(a:int,b:int) -> int:
+def division(a:float,b:float) -> float:
     """Division of numbers."""
     return a/b
 
@@ -42,6 +45,16 @@ calculator_agent = Agent(
 )  
   
 
+finance_agent = Agent(
+    name="Finance Agent",
+    role="Get financial data",
+    model=Gemini(id="gemini-2.0-flash"),
+    tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True,historical_prices=True,company_news=True)],
+    instructions="You are a finance expert. Use the tools given to perform finance related tasks. If unsure or need more clarity ask user to clarify or for more information. Use tables to display data",
+    show_tool_calls=True,
+    markdown=True
+)
+
 web_agent = Agent(
     name="Web Agent",
     role="Search the web for information",
@@ -50,17 +63,6 @@ web_agent = Agent(
     instructions="You are a web search expert. Use the tools given to search for user's queries. If unsure or need more clarity ask user to clarify or for more information.Always include sources",
     show_tool_calls=True,
     markdown=True,
-)
-
-
-finance_agent = Agent(
-    name="Finance Agent",
-    role="Get financial data",
-    model=Gemini(id="gemini-2.0-flash"),
-    tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True,company_news=True)],
-    instructions="You are a finance expert. Use the tools given to perform finance related tasks. If unsure or need more clarity ask user to clarify or for more information. Use tables to display data",
-    show_tool_calls=True,
-    markdown=True
 )
 
 
@@ -76,7 +78,8 @@ agent_team = Team(
       "Use the **finance agent** to answer queries related to stock prices, company valuations, financial history, or market data.",
       "Use the **web agent** to search the internet for current events, news, or information not available in the system's internal knowledge.",
       "If the user greets (e.g., 'hi', 'hello', 'hey', 'good morning'), respond normally by greeting and ask if you could assist them and **do not use any tool**.",
-      "Do not fabricate responses. Only use a tool when appropriate and provide accurate, grounded answers."
+      "Do not fabricate responses. Only use a tool when appropriate and provide accurate, grounded answers.",
+      f"Remember current date and time {current_time} whenever user gives query without defining specific date like(1 week ago instead of date of that day.)"
     ],
       show_tool_calls=True,
       markdown=True,
