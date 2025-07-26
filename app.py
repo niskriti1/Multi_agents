@@ -28,6 +28,7 @@ chat_css = """
     word-wrap: break-word;
 }
 
+
 .chat-message {
     display: flex;
     flex-direction: column;
