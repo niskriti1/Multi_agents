@@ -53,7 +53,6 @@ for agent in agent_team.members:
     with st.sidebar.expander(f"🤖 {agent.name}"):
         st.markdown(f"- **Role:** {agent.role}")
         st.markdown(f"- **Tools:** {', '.join(t.__class__.__name__ for t in agent.tools)}")
-        st.markdown(f"_Instructions:_ {agent.instructions}")
 
 st.title("💬 Multi-Agent Chat")
 

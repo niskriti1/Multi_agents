@@ -36,9 +36,9 @@ calculator_agent = Agent(
 	role="Performs arithmetic operations",
 	model=Gemini(id="gemini-2.0-flash"),
 	tools=[add,subtract,product,division],
-	instructions="If the user input matches the tool (add,subtact,product,division), call that tool with appropriate input.",
+	instructions="You are a calculation expert. Use the tools given to perform calculations. If unsure or need more clarity ask user to clarify or for more information.",
 	show_tool_calls=True,
-	markdown=True
+	markdown=True,
 )  
   
 
@@ -47,7 +47,7 @@ web_agent = Agent(
     role="Search the web for information",
     model=Gemini(id="gemini-2.0-flash"),
     tools=[DuckDuckGoTools()],
-    instructions="Always include sources",
+    instructions="You are a web search expert. Use the tools given to search for user's queries. If unsure or need more clarity ask user to clarify or for more information.Always include sources",
     show_tool_calls=True,
     markdown=True,
 )
@@ -58,10 +58,12 @@ finance_agent = Agent(
     role="Get financial data",
     model=Gemini(id="gemini-2.0-flash"),
     tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True,company_news=True)],
-    instructions="Use tables to display data",
+    instructions="You are a finance expert. Use the tools given to perform finance related tasks. If unsure or need more clarity ask user to clarify or for more information. Use tables to display data",
     show_tool_calls=True,
-    markdown=True,
+    markdown=True
 )
+
+
 
 agent_team = Team(
       mode="coordinate",
@@ -73,11 +75,13 @@ agent_team = Team(
       "Use the **calculator agent** for any arithmetic, such as addition, subtraction, multiplication, or percentage calculations.",
       "Use the **finance agent** to answer queries related to stock prices, company valuations, financial history, or market data.",
       "Use the **web agent** to search the internet for current events, news, or information not available in the system's internal knowledge.",
-      "If the user greets (e.g., 'hi', 'hello', 'hey', 'good morning'), respond naturally like 'Hello! How can I assist you today?' and **do not use any tool**.",
+      "If the user greets (e.g., 'hi', 'hello', 'hey', 'good morning'), respond normally by greeting and ask if you could assist them and **do not use any tool**.",
       "Do not fabricate responses. Only use a tool when appropriate and provide accurate, grounded answers."
     ],
       show_tool_calls=True,
       markdown=True,
+      add_history_to_messages=True,
+      num_history_runs=50
   )
 
 def get_response(user_query):
