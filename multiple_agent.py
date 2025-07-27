@@ -81,7 +81,8 @@ agent_team = Team(
       show_tool_calls=True,
       markdown=True,
       add_history_to_messages=True,
-      num_history_runs=50
+      num_history_runs=50,
+      add_datetime_to_instructions=True
   )
 
 def get_response(user_query):
