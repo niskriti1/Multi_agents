@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 from agno.tools import tool
 from agno.agent import Agent
@@ -13,7 +12,6 @@ load_dotenv()
 
 os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
 
-current_time = datetime.now().strftime("%A, %B %d, %Y %I:%M %p")
 
 @tool
 def add(a:float,b:float) -> float:
@@ -79,7 +77,6 @@ agent_team = Team(
       "Use the **web agent** to search the internet for current events, news, or information not available in the system's internal knowledge.",
       "If the user greets (e.g., 'hi', 'hello', 'hey', 'good morning'), respond normally by greeting and ask if you could assist them and **do not use any tool**.",
       "Do not fabricate responses. Only use a tool when appropriate and provide accurate, grounded answers.",
-      f"Remember current date and time {current_time} whenever user gives query without defining specific date like(1 week ago instead of date of that day.)"
     ],
       show_tool_calls=True,
       markdown=True,
